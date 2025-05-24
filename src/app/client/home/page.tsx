@@ -1,166 +1,118 @@
-"use Admin";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; // Corrected the path to the 'table' component
+"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
 
 export default function DashboardPage() {
-  // Sample data
-  const stuntingData = [
-    { month: "Nov 2023", value: 21580 },
-    { month: "Dec 2023", value: 21570 },
-    // ... other months
-    { month: "Nov 2024", value: 21500 },
-  ];
-
-  const scanResults = [
-    { id: "001", date: "12/11/2024", time: "13:30", name: "Daffa A.", age: 5, menu: "Menu A", akg: 85 },
-    // ... more data
-  ];
-
+  const [profiles, setProfiles] = useState([
+    { id: 1, name: 'Anak 1', age: '12 tahun' },
+    { id: 2, name: 'Anak 2', age: '8 tahun' },
+    { id: 3, name: 'Anak 3', age: '5 tahun' }
+  ]);
+  
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      {/* Sidebar */}
-      <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px]">
-            <h1 className="font-semibold">Nusantap</h1>
-          </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium">
-              <Button variant="ghost" className="w-full justify-start">
-                Cart Menu
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                Hasil Scan
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                Generate Menu
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                Peta Prevalensi
-              </Button>
-              <Button className="w-full justify-start gap-2 mt-4">
-                <QrCodeIcon className="h-4 w-4" />
-                Scan QR Code
-              </Button>
-            </nav>
-          </div>
-          <div className="mt-auto p-4">
-            <Card>
-              <CardHeader className="p-2 pt-0">
-                <CardTitle>Notifikasi</CardTitle>
-              </CardHeader>
-              <CardContent className="p-2">
-                <Button variant="ghost" className="w-full justify-start">
-                  Bantuan
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  Pengaturan
-                </Button>
-                <div className="mt-2 text-sm">
-                  <p>Daffa A. (Jawa Barat)</p>
-                  <p className="text-muted-foreground">daffa.jabar@nusantap.id</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 min-h-[70vh]">
+        {/* Header with back button */}
+        <div className="flex items-center mb-6">
+          <button className="p-2 rounded-full hover:bg-gray-100">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-xl font-semibold ml-4">Pilih Profil Anak</h1>
+          <button className="ml-auto p-2 rounded-full hover:bg-gray-100">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </button>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px]">
-          <h1 className="text-lg font-semibold">Nasil Scan</h1>
-        </header>
+        {/* Profile grid */}
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          {/* Existing profiles */}
+          {profiles.map(profile => (
+            <div key={profile.id} className="relative border rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md hover:border-green-400">
+              <button className="absolute top-2 right-2 text-red-400 hover:text-red-600 transition-colors duration-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+              </button>
+              <div className="w-16 h-16 bg-green-300 rounded-full flex items-center justify-center mb-2 transition-all duration-300 hover:bg-green-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform duration-300 group-hover:scale-110"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <span className="font-medium transition-all duration-300 hover:text-green-600">{profile.name}</span>
+              <span className="text-xs text-gray-500 transition-all duration-300">{profile.age}</span>
+            </div>
+          ))}
 
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Tabs defaultValue="main">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="main">Tab Utama</TabsTrigger>
-              <TabsTrigger value="chart">Tab Grafik</TabsTrigger>
-              <TabsTrigger value="table">Tab Tabel</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="main">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Presentase Stunting 12 Bulan Terakhir</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex space-x-4 overflow-x-auto py-2">
-                    {stuntingData.map((item) => (
-                      <div key={item.month} className="flex flex-col items-center">
-                        <Badge variant="outline">{item.value}</Badge>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {item.month}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="table">
-              <Card>
-                <CardHeader className="flex-row items-center justify-between">
-                  <CardTitle>Hasil Scan</CardTitle>
-                  <div className="flex gap-2">
-                    <Input placeholder="Cari nama atau menu" className="w-[200px]" />
-                    <Button variant="outline">Filter by date</Button>
-                    <Button variant="outline">Filter by age range</Button>
-                    <Button>
-                      <DownloadIcon className="mr-2 h-4 w-4" />
-                      Download PDF
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Tanggal</TableHead>
-                        <TableHead>Waktu</TableHead>
-                        <TableHead>Nama</TableHead>
-                        <TableHead>Umur</TableHead>
-                        <TableHead>Menu</TableHead>
-                        <TableHead>%AKG Terpenuhi</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {scanResults.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.id}</TableCell>
-                          <TableCell>{item.date}</TableCell>
-                          <TableCell>{item.time}</TableCell>
-                          <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.age}</TableCell>
-                          <TableCell>{item.menu}</TableCell>
-                          <TableCell>{item.akg}%</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          <div className="text-sm text-muted-foreground">
-            Last updated: 12/11/2024 - 13:30 WIB
-          </div>
-        </main>
+          {/* Add new profile */}
+          <Link href="/client/add" className="border border-dashed border-blue-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md hover:border-blue-400">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2 transition-all duration-300 hover:bg-blue-200">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32" 
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="lightblue"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform duration-300 group-hover:scale-110"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+            <span className="font-medium text-blue-500 transition-all duration-300 hover:text-blue-600">Tambah Profil Anak</span>
+            <span className="text-xs text-gray-400 text-center">Minimal profil berusia 1 tahun</span>
+          </Link>
+        </div>
       </div>
     </div>
   );
