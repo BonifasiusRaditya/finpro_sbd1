@@ -106,16 +106,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className='flex items-center justify-between mb-3'>
-              {/* i want to make to sign up */}
-              <p className='text-sm text-black'>
-                Don't have an account?{' '}
-                <a href="/register" className="font-medium text-black hover:text-blue-500">
-                  Sign Up here!!
-                </a>
-              </p>
-            </div>
-
             <div>
               <button
                 type="submit"

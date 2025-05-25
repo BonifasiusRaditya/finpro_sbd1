@@ -1,10 +1,11 @@
-"use Admin";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/sidebarAdmin";
+import DownloadIcon from "@/components/ui/DownloadIcon";
 import {
   Table,
   TableBody,
@@ -12,61 +13,74 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"; // Corrected the path to the 'table' component
+} from "@/components/ui/table";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function HomePage() {
-  // Sample data
   const stuntingData = [
-    { month: "Nov 2023", value: 21580 },
-    { month: "Dec 2023", value: 21570 },
-    // ... other months
-    { month: "Nov 2024", value: 21500 },
-  ];
-
-  const scanResults = [
-    { id: "001", date: "12/11/2024", time: "13:30", name: "Daffa A.", age: 5, menu: "Menu A", akg: 85 },
-    // ... more data
+    { month: "Nov 2023", value: 1580 },
+    { month: "Dec 2023", value: 2270 },
+    { month: "Jan 2024", value: 3560 },
+    { month: "Feb 2024", value: 2550 },
+    { month: "Mar 2024", value: 1540 },
+    { month: "Apr 2024", value: 5530 },
+    { month: "May 2024", value: 20520 },
+    { month: "Jun 2024", value: 5510 },
+    { month: "Jul 2024", value: 1505 },
+    { month: "Aug 2024", value: 2503 },
+    { month: "Sep 2024", value: 3501 },
+    { month: "Oct 2024", value: 2000 },
+    { month: "Nov 2024", value: 1000 },
   ];
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
+
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px]">
           <h1 className="text-lg font-semibold">Food Distribution Report</h1>
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Tabs defaultValue="main">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="main">Tab Utama</TabsTrigger>
-              <TabsTrigger value="chart">Tab Grafik</TabsTrigger>
-              <TabsTrigger value="table">Tab Tabel</TabsTrigger>
+          <Tabs defaultValue="chart">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="chart">Graphic View</TabsTrigger>
+              <TabsTrigger value="table">Table View</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="main">
+            {/* Graphic View */}
+            <TabsContent value="chart">
               <Card>
                 <CardHeader>
-                  <CardTitle>Presentase Stunting 12 Bulan Terakhir</CardTitle>
+                  <CardTitle>Penyebaran Makanan di Indonesia</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex space-x-4 overflow-x-auto py-2">
-                    {stuntingData.map((item) => (
-                      <div key={item.month} className="flex flex-col items-center">
-                        <Badge variant="outline">{item.value}</Badge>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {item.month}
-                        </span>
-                      </div>
-                    ))}
+                  <div className="w-full h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={stuntingData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
+            {/* Table View */}
             <TabsContent value="table">
               <Card>
                 <CardHeader className="flex-row items-center justify-between">
@@ -85,25 +99,15 @@ export default function HomePage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>ID</TableHead>
                         <TableHead>Tanggal</TableHead>
-                        <TableHead>Waktu</TableHead>
-                        <TableHead>Nama</TableHead>
-                        <TableHead>Umur</TableHead>
-                        <TableHead>Menu</TableHead>
-                        <TableHead>%AKG Terpenuhi</TableHead>
+                        <TableHead>Jumlah</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {scanResults.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.id}</TableCell>
-                          <TableCell>{item.date}</TableCell>
-                          <TableCell>{item.time}</TableCell>
-                          <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.age}</TableCell>
-                          <TableCell>{item.menu}</TableCell>
-                          <TableCell>{item.akg}%</TableCell>
+                      {stuntingData.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{item.month}</TableCell>
+                          <TableCell>{item.value}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -119,26 +123,5 @@ export default function HomePage() {
         </main>
       </div>
     </div>
-  );
-}
-
-function DownloadIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" x2="12" y1="15" y2="3" />
-    </svg>
   );
 }
