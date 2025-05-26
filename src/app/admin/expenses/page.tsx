@@ -1,20 +1,7 @@
 "use Admin";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/sidebarAdmin";
-import DownloadIcon from "@/components/ui/DownloadIcon";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; 
-
 
 export default function HomePage() {
   // Sample data
@@ -26,7 +13,15 @@ export default function HomePage() {
   ];
 
   const scanResults = [
-    { id: "001", date: "12/11/2024", time: "13:30", name: "Daffa A.", age: 5, menu: "Menu A", akg: 85 },
+    {
+      id: "001",
+      date: "12/11/2024",
+      time: "13:30",
+      name: "Daffa A.",
+      age: 5,
+      menu: "Menu A",
+      akg: 85,
+    },
     // ... more data
   ];
 
@@ -49,15 +44,11 @@ export default function HomePage() {
             </TabsList>
 
             <TabsContent value="chart">
-              <Card>
-                ye
-              </Card>
+              <Card>ye</Card>
             </TabsContent>
 
             <TabsContent value="table">
-              <Card>
-                apa
-              </Card>
+              <Card>apa</Card>
             </TabsContent>
           </Tabs>
 

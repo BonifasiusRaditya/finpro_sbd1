@@ -1,5 +1,4 @@
-import React from "react";
-import Sidebar from '@/components/sidebarAdmin';
+import Sidebar from "@/components/sidebarAdmin";
 
 export default function SetMenuPage() {
   return (
@@ -15,69 +14,67 @@ export default function SetMenuPage() {
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="space-y-4">
-
             <form className="bg-white rounded-lg shadow px-4 py-5 space-y-4 w-full">
-                <div>
-                    <h1 className="text-lg mb-7 font-bold text-gray-800 mb-2 flex justify-center">
-                        Edit Menu
-                    </h1>
+              <div>
+                <h1 className="text-lg mb-7 font-bold text-gray-800 flex justify-center">
+                  Edit Menu
+                </h1>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Hari
+                  Hari
                 </label>
                 <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-                    <option value="">Pilih Hari</option>
-                    <option value="senin">Senin</option>
-                    <option value="selasa">Selasa</option>
-                    <option value="rabu">Rabu</option>
-                    <option value="kamis">Kamis</option>
-                    <option value="jumat">Jumat</option>
+                  <option value="">Pilih Hari</option>
+                  <option value="senin">Senin</option>
+                  <option value="selasa">Selasa</option>
+                  <option value="rabu">Rabu</option>
+                  <option value="kamis">Kamis</option>
+                  <option value="jumat">Jumat</option>
                 </select>
-                </div>
+              </div>
 
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Menu Sarapan
+                  Menu Sarapan
                 </label>
                 <input
-                    type="text"
-                    placeholder="Contoh: Nasi Goreng, Telur Rebus"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  type="text"
+                  placeholder="Contoh: Nasi Goreng, Telur Rebus"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
-                </div>
+              </div>
 
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Menu Makan Siang
+                  Menu Makan Siang
                 </label>
                 <input
-                    type="text"
-                    placeholder="Contoh: Nasi + Ayam + Sayur"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  type="text"
+                  placeholder="Contoh: Nasi + Ayam + Sayur"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
-                </div>
+              </div>
 
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Menu Camilan
+                  Menu Camilan
                 </label>
                 <input
-                    type="text"
-                    placeholder="Contoh: Pisang Rebus, Susu UHT"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  type="text"
+                  placeholder="Contoh: Pisang Rebus, Susu UHT"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
-                </div>
+              </div>
 
-                <div className="pt-2">
+              <div className="pt-2">
                 <button
-                    type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium"
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium"
                 >
-                    Save
+                  Save
                 </button>
-                </div>
+              </div>
             </form>
-            </div>
-
+          </div>
         </main>
       </div>
     </div>

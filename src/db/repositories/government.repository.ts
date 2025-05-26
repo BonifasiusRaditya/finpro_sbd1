@@ -1,5 +1,6 @@
 import pool from "@/config/db.config";
 import { Government } from "@/types/government-types";
+import bcrypt from "bcrypt";
 
 export class GovernmentRepository {
   static async findById(id: string) {
@@ -55,5 +56,30 @@ export class GovernmentRepository {
 
   static async delete(id: string) {
     await pool.query("DELETE FROM governments WHERE id = $1", [id]);
+  }
+
+  static async verifyPassword(
+    province_id: string,
+    password: string
+  ): Promise<Government | null> {
+    try {
+      const government = await this.findByProvinceId(province_id);
+      if (!government) {
+        return null;
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        government.password
+      );
+      if (!isPasswordValid) {
+        return null;
+      }
+
+      return government;
+    } catch (error) {
+      console.error("Error verifying government password:", error);
+      throw new Error("Database error occurred");
+    }
   }
 }

@@ -1,56 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GovernmentRepository } from "@/db/repositories/government.repository";
-import jwt from "jsonwebtoken";
+import { JWTService } from "@/lib/jwt";
+import { LoginRequest, LoginResponse } from "@/types/auth-types";
 
 export async function POST(request: NextRequest) {
-  const { province_id, password } = await request.json();
+  try {
+    const body: LoginRequest = await request.json();
 
-  if (!province_id || !password) {
-    return NextResponse.json(
-      { success: false, message: "Province ID and password are required" },
-      { status: 400 }
+    // Validate required fields
+    if (!body.identifier || !body.password) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Province ID and password are required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const government = await GovernmentRepository.findByProvinceId(
+      body.identifier
     );
-  }
 
-  const government = await GovernmentRepository.findByProvinceId(province_id);
+    if (!government) {
+      return NextResponse.json(
+        { success: false, message: "Invalid province ID" },
+        { status: 401 }
+      );
+    }
 
-  if (!government) {
-    return NextResponse.json(
-      { success: false, message: "Government not found" },
-      { status: 404 }
-    );
-  }
+    if (body.password !== government.password) {
+      return NextResponse.json(
+        { success: false, message: "Invalid password" },
+        { status: 401 }
+      );
+    }
 
-  // Compare password using bcrypt
-  if (password !== government.password) {
-    return NextResponse.json(
-      { success: false, message: "Invalid password" },
-      { status: 401 }
-    );
-  }
-
-  // Generate JWT token
-  const token = jwt.sign(
-    {
+    // Generate JWT token
+    const token = JWTService.generateGovernmentToken({
       id: government.id,
       province_id: government.province_id,
       province: government.province,
-    },
-    process.env.JWT_SECRET as string,
-    { expiresIn: "24h" }
-  );
+    });
 
-  return NextResponse.json(
-    {
+    const response: LoginResponse = {
       success: true,
-      message: "Login successful",
-      token: `${token}`,
-      government: {
+      token,
+      user: {
         id: government.id,
+        role: "government",
+        name: government.province,
         province_id: government.province_id,
         province: government.province,
+        contact_name: government.contact_name,
+        contact_email: government.contact_email,
+        contact_phone: government.contact_phone,
+        address: government.address,
       },
-    },
-    { status: 200 }
-  );
+      message: "Login successful",
+    };
+
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    console.error("Government login error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal server error",
+      },
+      { status: 500 }
+    );
+  }
 }

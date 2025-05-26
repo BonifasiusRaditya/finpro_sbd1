@@ -1,9 +1,7 @@
 "use client";
-import { useState } from 'react';
+import { useState } from "react";
 import React from "react";
-import Head from 'next/head';
-import Link from 'next/link';
-import Sidebar from '@/components/sidebarAdmin';
+import Sidebar from "@/components/sidebarAdmin";
 
 interface FormData {
   username: string;
@@ -13,48 +11,48 @@ interface FormData {
 }
 
 function CreateAccountPage() {
-    const [formData, setFormData] = useState<FormData>({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+  const [formData, setFormData] = useState<FormData>({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
-    
+
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
     setIsLoading(true);
     setError(null);
-    
+
     setTimeout(() => {
-      console.log('Registration data:', {
+      console.log("Registration data:", {
         name: formData.username,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
       setIsLoading(false);
-      alert('Registration successful! (check console)');
+      alert("Registration successful! (check console)");
     }, 1500);
   };
 
@@ -63,7 +61,6 @@ function CreateAccountPage() {
       <Sidebar />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md items-center justify-center flex flex-col">
-
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 mb-5">
           Create School Account
         </h2>
@@ -74,10 +71,13 @@ function CreateAccountPage() {
               {error}
             </div>
           )}
-          
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Username
               </label>
               <div className="mt-1 text-black">
@@ -96,7 +96,10 @@ function CreateAccountPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1 text-black">
@@ -115,7 +118,10 @@ function CreateAccountPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="mt-1 text-black">
@@ -134,7 +140,10 @@ function CreateAccountPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Confirm Password
               </label>
               <div className="mt-1 text-black">
@@ -156,16 +165,18 @@ function CreateAccountPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}>
-                {isLoading ? 'Creating account...' : 'Create Account'}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  isLoading ? "opacity-75 cursor-not-allowed" : ""
+                }`}
+              >
+                {isLoading ? "Creating account..." : "Create Account"}
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-    )
+  );
 }
 
 export default CreateAccountPage;
-
