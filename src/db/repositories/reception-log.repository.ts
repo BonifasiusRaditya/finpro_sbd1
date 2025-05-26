@@ -84,7 +84,7 @@ export class ReceptionLogRepository {
           m.date as menu_date,
           sma.quantity as allocation_quantity
         FROM reception_logs rl
-        JOIN users u ON rl.user_id = u.id
+        JOIN students u ON rl.user_id = u.id
         JOIN school_menu_allocations sma ON rl.school_menu_allocation_id = sma.id
         JOIN menus m ON sma.menu_id = m.id
         WHERE u.school_id = $1
@@ -92,7 +92,7 @@ export class ReceptionLogRepository {
       let countQuery = `
         SELECT COUNT(*) as count 
         FROM reception_logs rl 
-        JOIN users u ON rl.user_id = u.id 
+        JOIN students u ON rl.user_id = u.id 
         JOIN school_menu_allocations sma ON rl.school_menu_allocation_id = sma.id
         WHERE u.school_id = $1
       `;
