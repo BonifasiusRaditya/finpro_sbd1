@@ -14,7 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"; 
-
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function HomePage() {
   // Sample data
@@ -38,7 +46,7 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px]">
-          <h1 className="text-lg font-semibold">Expenses Tracker</h1>
+          <h1 className="text-lg font-semibold">Food Distribution Menu</h1>
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -56,7 +64,7 @@ export default function HomePage() {
 
             <TabsContent value="table">
               <Card>
-                apa
+                gacor
               </Card>
             </TabsContent>
           </Tabs>
