@@ -1,8 +1,6 @@
 "use client";
 import { useState } from 'react';
 import React from "react";
-import Head from 'next/head';
-import Link from 'next/link';
 import Sidebar from '@/components/sidebarSchool';
 
 interface FormData {

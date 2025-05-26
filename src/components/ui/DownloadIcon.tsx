@@ -1,6 +1,6 @@
 import React from "react";
 
-function DownloadIcon(props: any) {
+function DownloadIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

@@ -4,7 +4,6 @@ import Sidebar from "@/components/sidebarStudent";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function QRPage() {
-  const qrValue = "studentId-12345"; //data dummy cugs
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">

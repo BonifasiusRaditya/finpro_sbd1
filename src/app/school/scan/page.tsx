@@ -2,9 +2,7 @@
 
 import { useEffect } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import Sidebar from '@/components/sidebarSchool';
 
 export default function ScanPage() {
@@ -15,7 +13,7 @@ export default function ScanPage() {
     }, false);
 
     scanner.render(
-      (decodedText, decodedResult) => {
+      (decodedText ) => {
         console.log("QR Code scanned:", decodedText);
         alert(`QR Code: ${decodedText}`);
         scanner.clear();
