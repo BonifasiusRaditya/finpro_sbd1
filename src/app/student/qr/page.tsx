@@ -2,13 +2,29 @@
 
 import Sidebar from "@/components/sidebarStudent";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useStudentAuth } from "@/hooks/useStudentAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function QRPage() {
+  const router = useRouter();
+  const { user, isLoading, isAuthenticated } = useStudentAuth();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/student/auth/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (!isAuthenticated || !user) {
+    return null; // Will redirect to login
+  }
+
   const qrValue = "studentId-12345"; //data dummy cugs
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar />
+      <Sidebar user={user} />
 
       <div className="flex flex-col">
         <header className="flex h-14 items-center border-b bg-muted/40 px-4 lg:h-[60px]">
