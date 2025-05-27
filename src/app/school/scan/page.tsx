@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Sidebar from "@/components/sidebarSchool";
+import Image from "next/image";
 
 interface TodayMenu {
   allocation_id: string;
@@ -296,7 +297,7 @@ export default function ScanPage() {
                     >
                       <CardContent className="p-4">
                         {menu.menu_image_url && (
-                          <img
+                          <Image
                             src={menu.menu_image_url}
                             alt={menu.menu_name}
                             className="w-full h-32 object-cover rounded-md mb-3"

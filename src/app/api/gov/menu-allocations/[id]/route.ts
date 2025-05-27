@@ -6,7 +6,7 @@ import { UpdateMenuAllocationRequest } from "@/types/menu-types";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -14,8 +14,9 @@ export async function GET(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
-    const allocation = await MenuRepository.findAllocationById(params.id);
+    const allocation = await MenuRepository.findAllocationById(id);
 
     if (!allocation) {
       return NextResponse.json(
@@ -37,7 +38,7 @@ export async function GET(
         1
       );
 
-      const belongsToGovernment = allocations.some((a) => a.id === params.id);
+      const belongsToGovernment = allocations.some((a) => a.id === id);
       if (!belongsToGovernment) {
         return NextResponse.json(
           {
@@ -71,7 +72,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -79,14 +80,13 @@ export async function PUT(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
     const body = await request.json();
     const { quantity, date }: UpdateMenuAllocationRequest = body;
 
     // Check if allocation exists and belongs to this government
-    const existingAllocation = await MenuRepository.findAllocationById(
-      params.id
-    );
+    const existingAllocation = await MenuRepository.findAllocationById(id);
     if (!existingAllocation) {
       return NextResponse.json(
         {
@@ -104,7 +104,7 @@ export async function PUT(
       1000 // Get more to ensure we find it
     );
 
-    const belongsToGovernment = allocations.some((a) => a.id === params.id);
+    const belongsToGovernment = allocations.some((a) => a.id === id);
     if (!belongsToGovernment) {
       return NextResponse.json(
         {
@@ -162,7 +162,7 @@ export async function PUT(
     if (date !== undefined) updateData.date = date;
 
     const updatedAllocation = await MenuRepository.updateAllocation(
-      params.id,
+      id,
       updateData
     );
 
@@ -177,7 +177,7 @@ export async function PUT(
     }
 
     // Get the full allocation details for response
-    const fullAllocation = await MenuRepository.findAllocationById(params.id);
+    const fullAllocation = await MenuRepository.findAllocationById(id);
 
     return NextResponse.json(
       {
@@ -201,7 +201,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -209,12 +209,11 @@ export async function DELETE(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
 
     // Check if allocation exists and belongs to this government
-    const existingAllocation = await MenuRepository.findAllocationById(
-      params.id
-    );
+    const existingAllocation = await MenuRepository.findAllocationById(id);
     if (!existingAllocation) {
       return NextResponse.json(
         {
@@ -232,7 +231,7 @@ export async function DELETE(
       1000 // Get more to ensure we find it
     );
 
-    const belongsToGovernment = allocations.some((a) => a.id === params.id);
+    const belongsToGovernment = allocations.some((a) => a.id === id);
     if (!belongsToGovernment) {
       return NextResponse.json(
         {
@@ -243,7 +242,11 @@ export async function DELETE(
       );
     }
 
-    const deleted = await MenuRepository.deleteAllocation(params.id);
+    // Check if allocation has any distributed meals
+    // This would prevent deletion if meals have already been distributed
+    // You might want to implement this check based on your business logic
+
+    const deleted = await MenuRepository.deleteAllocation(id);
 
     if (!deleted) {
       return NextResponse.json(

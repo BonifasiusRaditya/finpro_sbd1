@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useGovernmentAuth } from "@/hooks/useGovernmentAuth";
+import Image from "next/image";
+import logo from "@/asset/logo.png";
 
 export default function GovernmentSidebar() {
   const pathname = usePathname();
@@ -18,9 +20,13 @@ export default function GovernmentSidebar() {
             href="/gov/dashboard"
             className="flex items-center gap-2 font-semibold"
           >
-            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">MBG</span>
-            </div>
+            <Image
+              src={logo}
+              alt="Logo"
+              className="h-10 w-10 rounded-full"
+              width={40}
+              height={40}
+            />
             <span className="text-lg">Government Portal</span>
           </Link>
         </div>

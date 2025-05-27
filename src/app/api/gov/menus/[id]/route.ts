@@ -6,7 +6,7 @@ import { GovernmentJWTPayload } from "@/types/auth-types";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -14,8 +14,9 @@ export async function GET(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
-    const menu = await MenuRepository.findById(params.id);
+    const menu = await MenuRepository.findById(id);
 
     if (!menu) {
       return NextResponse.json(
@@ -60,7 +61,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -68,6 +69,7 @@ export async function PUT(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
     const body = await request.json();
     const {
@@ -79,7 +81,7 @@ export async function PUT(
     }: UpdateMenuRequest = body;
 
     // Check if menu exists
-    const existingMenu = await MenuRepository.findById(params.id);
+    const existingMenu = await MenuRepository.findById(id);
     if (!existingMenu) {
       return NextResponse.json(
         {
@@ -166,7 +168,7 @@ export async function PUT(
       updateData.price_per_portion = price_per_portion;
     if (image_url !== undefined) updateData.image_url = image_url?.trim();
 
-    const updatedMenu = await MenuRepository.update(params.id, updateData);
+    const updatedMenu = await MenuRepository.update(id, updateData);
 
     if (!updatedMenu) {
       return NextResponse.json(
@@ -200,7 +202,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -208,10 +210,11 @@ export async function DELETE(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
 
     // Check if menu exists
-    const existingMenu = await MenuRepository.findById(params.id);
+    const existingMenu = await MenuRepository.findById(id);
     if (!existingMenu) {
       return NextResponse.json(
         {
@@ -233,7 +236,7 @@ export async function DELETE(
       );
     }
 
-    const deleted = await MenuRepository.delete(params.id);
+    const deleted = await MenuRepository.delete(id);
 
     if (!deleted) {
       return NextResponse.json(

@@ -1,43 +1,9 @@
 "use Admin";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/sidebarAdmin";
-import DownloadIcon from "@/components/ui/DownloadIcon";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 
 export default function HomePage() {
-  // Sample data
-  const stuntingData = [
-    { month: "Nov 2023", value: 21580 },
-    { month: "Dec 2023", value: 21570 },
-    // ... other months
-    { month: "Nov 2024", value: 21500 },
-  ];
-
-  const scanResults = [
-    { id: "001", date: "12/11/2024", time: "13:30", name: "Daffa A.", age: 5, menu: "Menu A", akg: 85 },
-    // ... more data
-  ];
-
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       {/* Sidebar */}
@@ -57,15 +23,11 @@ export default function HomePage() {
             </TabsList>
 
             <TabsContent value="chart">
-              <Card>
-                ye
-              </Card>
+              <Card>ye</Card>
             </TabsContent>
 
             <TabsContent value="table">
-              <Card>
-                gacor
-              </Card>
+              <Card>gacor</Card>
             </TabsContent>
           </Tabs>
 

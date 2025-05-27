@@ -6,7 +6,7 @@ import { GovernmentJWTPayload } from "@/types/auth-types";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -14,8 +14,9 @@ export async function GET(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
-    const school = await SchoolRepository.findById(params.id);
+    const school = await SchoolRepository.findById(id);
 
     if (!school) {
       return NextResponse.json(
@@ -73,7 +74,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -81,10 +82,11 @@ export async function PUT(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
     const body: UpdateSchoolRequest = await request.json();
 
-    const existingSchool = await SchoolRepository.findById(params.id);
+    const existingSchool = await SchoolRepository.findById(id);
     if (!existingSchool) {
       return NextResponse.json(
         {
@@ -115,7 +117,7 @@ export async function PUT(
       );
     }
 
-    const updatedSchool = await SchoolRepository.update(params.id, body);
+    const updatedSchool = await SchoolRepository.update(id, body);
     if (!updatedSchool) {
       return NextResponse.json(
         {
@@ -162,7 +164,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await authenticateRequest(request, ["government"]);
@@ -170,8 +172,9 @@ export async function DELETE(
       return authResult.response;
     }
 
+    const { id } = await params;
     const user = authResult.user as GovernmentJWTPayload;
-    const existingSchool = await SchoolRepository.findById(params.id);
+    const existingSchool = await SchoolRepository.findById(id);
 
     if (!existingSchool) {
       return NextResponse.json(
@@ -193,7 +196,7 @@ export async function DELETE(
       );
     }
 
-    const deleted = await SchoolRepository.delete(params.id);
+    const deleted = await SchoolRepository.delete(id);
     if (!deleted) {
       return NextResponse.json(
         {

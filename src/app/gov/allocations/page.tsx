@@ -95,8 +95,10 @@ export default function MenuAllocationPage() {
 
   const filteredAllocations = allocations.filter(
     (allocation) =>
-      allocation.school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      allocation.menu.name.toLowerCase().includes(searchTerm.toLowerCase())
+      allocation.school?.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      allocation.menu?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getAllocationStatus = (allocationDate: string) => {
@@ -128,7 +130,7 @@ export default function MenuAllocationPage() {
   const getTotalBudget = () =>
     allocations.reduce(
       (sum, allocation) =>
-        sum + allocation.quantity * allocation.menu.price_per_portion,
+        sum + allocation.quantity * (allocation.menu?.price_per_portion || 0),
       0
     );
   const getUpcomingAllocations = () =>
@@ -393,27 +395,27 @@ export default function MenuAllocationPage() {
                           const status = getAllocationStatus(allocation.date);
                           const totalValue =
                             allocation.quantity *
-                            allocation.menu.price_per_portion;
+                            (allocation.menu?.price_per_portion || 0);
                           return (
                             <TableRow key={allocation.id}>
                               <TableCell className="font-medium">
                                 <div>
                                   <div className="font-semibold">
-                                    {allocation.school.name}
+                                    {allocation.school?.name}
                                   </div>
                                   <div className="text-sm text-muted-foreground">
-                                    NPSN: {allocation.school.npsn}
+                                    NPSN: {allocation.school?.npsn}
                                   </div>
                                 </div>
                               </TableCell>
                               <TableCell>
                                 <div>
                                   <div className="font-semibold">
-                                    {allocation.menu.name}
+                                    {allocation.menu?.name}
                                   </div>
                                   <div className="text-sm text-muted-foreground">
                                     {formatCurrency(
-                                      allocation.menu.price_per_portion
+                                      allocation.menu?.price_per_portion || 0
                                     )}{" "}
                                     per portion
                                   </div>
@@ -494,8 +496,8 @@ export default function MenuAllocationPage() {
                                     onClick={() =>
                                       handleDeleteAllocation(
                                         allocation.id,
-                                        allocation.school.name,
-                                        allocation.menu.name
+                                        allocation.school?.name || "",
+                                        allocation.menu?.name || ""
                                       )
                                     }
                                     className="text-red-600 hover:text-red-700 hover:bg-red-50"

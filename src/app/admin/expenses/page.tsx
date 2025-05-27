@@ -4,27 +4,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Sidebar from "@/components/sidebarAdmin";
 
 export default function HomePage() {
-  // Sample data
-  const stuntingData = [
-    { month: "Nov 2023", value: 21580 },
-    { month: "Dec 2023", value: 21570 },
-    // ... other months
-    { month: "Nov 2024", value: 21500 },
-  ];
-
-  const scanResults = [
-    {
-      id: "001",
-      date: "12/11/2024",
-      time: "13:30",
-      name: "Daffa A.",
-      age: 5,
-      menu: "Menu A",
-      akg: 85,
-    },
-    // ... more data
-  ];
-
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       {/* Sidebar */}
