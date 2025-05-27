@@ -67,7 +67,6 @@ export default function StudentHomePage() {
   const [canClaim, setCanClaim] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const [showQR, setShowQR] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -110,14 +109,6 @@ export default function StudentHomePage() {
       style: "currency",
       currency: "IDR",
     }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("id-ID", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   const formatDateTime = (dateString: string) => {
@@ -217,6 +208,31 @@ export default function StudentHomePage() {
             </Card>
           </div>
         )}
+
+        {/* QR Code Action */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Meal Claim QR Code</CardTitle>
+            <CardDescription>
+              Generate your QR code to claim today&apos;s meal
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm text-gray-600">
+                <p>• QR Format: mbgku-{user.student_number}</p>
+                <p>• Valid for today only</p>
+                <p>• One meal per day limit</p>
+              </div>
+              <a
+                href="/student/qr"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 text-white hover:bg-green-700 h-10 px-4 py-2"
+              >
+                Generate QR Code
+              </a>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="today" className="space-y-4">
