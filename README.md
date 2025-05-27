@@ -140,26 +140,14 @@ Berikut adalah semua dependencies yang digunakan dalam proyek ini:
 * `eslint-config-next@15.3.2` - Konfigurasi ESLint khusus untuk proyek Next.js.
 * `@eslint/eslintrc@3.3.1` - Konfigurasi tambahan ESLint.
 
-### 🧪 Ekstra (tidak wajib / extraneous)
-
-Dependencies ini muncul sebagai `extraneous`, artinya tidak terdaftar secara eksplisit di `package.json`. Jika kamu tidak butuh WebAssembly atau NAPI, bisa dihapus.
-
-* `@emnapi/core@1.4.3`
-* `@emnapi/runtime@1.4.3`
-* `@emnapi/wasi-threads@1.0.2`
-* `@napi-rs/wasm-runtime@0.2.9`
-* `@tybys/wasm-util@0.9.0`
-
+## 📦List instalasi package web:
 ```bash
-npm uninstall nama-paket
+npm install next react react-dom react-router-dom
+npm install tailwindcss @tailwindcss/postcss clsx class-variance-authority tw-animate-css
+npm install @radix-ui/react-slot @radix-ui/react-tabs lucide-react
+npm install recharts
+npm install html5-qrcode qrcode.react
+npm install -D typescript @types/node @types/react @types/react-dom
+npm install -D eslint eslint-config-next @eslint/eslintrc
+npx tailwindcss init -p
 ```
-
-Untuk menambahkannya secara resmi, gunakan:
-
-```bash
-npm install nama-paket --save
-```
-
----
-
-
