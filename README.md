@@ -7,6 +7,9 @@
 - **Klien Database**: `pg` (node-postgres)
 
 ## Arsitektur Aplikasi
+
+![picture 1](https://i.imgur.com/4aP9zWc.png)  
+
 Sistem terdiri dari tiga jenis pengguna utama:
 
 ### 1. SISI SISWA
