@@ -3,6 +3,7 @@ export interface ReceptionLog {
   user_id: string; // Student ID
   school_menu_allocation_id: string; // Reference to school_menu_allocation
   received_at: Date;
+  date: Date; // Date when the meal was claimed
   created_at?: Date;
   updated_at?: Date;
 }

@@ -193,8 +193,6 @@ export default function CreateMenuPage() {
                           value={formData.price_per_portion || ""}
                           onChange={handleChange}
                           placeholder="15000"
-                          min="1"
-                          step="100"
                           required
                         />
                         <p className="text-xs text-muted-foreground">

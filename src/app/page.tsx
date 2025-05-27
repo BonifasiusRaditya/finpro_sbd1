@@ -126,7 +126,7 @@ export default function HomePage() {
           </Link>
 
           {/* Government Portal */}
-          <Link href="/government/auth/login">
+          <Link href="/gov/auth/login">
             <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border-t-4 border-purple-500 cursor-pointer group">
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors">

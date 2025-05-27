@@ -536,4 +536,131 @@ export class SchoolAPI {
       throw new Error("Network error occurred");
     }
   }
+
+  /**
+   * Get today's available menus for scanning
+   */
+  static async getTodayMenus(): Promise<{
+    menus: Array<{
+      allocation_id: string;
+      menu_id: string;
+      menu_name: string;
+      menu_description?: string;
+      menu_date: string;
+      price_per_portion: number;
+      menu_image_url?: string;
+      total_quantity: number;
+      distributed_count: number;
+      available_quantity: number;
+      allocation_date: string;
+    }>;
+    date: string;
+    total_menus: number;
+  }> {
+    try {
+      const response: AxiosResponse<{
+        success: boolean;
+        message: string;
+        data: {
+          menus: Array<{
+            allocation_id: string;
+            menu_id: string;
+            menu_name: string;
+            menu_description?: string;
+            menu_date: string;
+            price_per_portion: number;
+            menu_image_url?: string;
+            total_quantity: number;
+            distributed_count: number;
+            available_quantity: number;
+            allocation_date: string;
+          }>;
+          date: string;
+          total_menus: number;
+        };
+      }> = await apiClient.get("/api/school/today-menus");
+
+      return response.data.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to fetch today's menus"
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  }
+
+  /**
+   * Scan student QR code and record meal claim
+   */
+  static async scanMeal(data: {
+    student_qr_code: string;
+    allocation_id: string;
+  }): Promise<{
+    reception_log: {
+      id: string;
+      received_at: string;
+    };
+    student: {
+      id: string;
+      name: string;
+      student_number: string;
+      class: string;
+      grade: string;
+    };
+    menu: {
+      name: string;
+      description?: string;
+      price_per_portion: number;
+    };
+    allocation: {
+      id: string;
+      date: string;
+      total_quantity: number;
+      distributed_count: number;
+      remaining_quantity: number;
+    };
+  }> {
+    try {
+      const response: AxiosResponse<{
+        success: boolean;
+        message: string;
+        data: {
+          reception_log: {
+            id: string;
+            received_at: string;
+          };
+          student: {
+            id: string;
+            name: string;
+            student_number: string;
+            class: string;
+            grade: string;
+          };
+          menu: {
+            name: string;
+            description?: string;
+            price_per_portion: number;
+          };
+          allocation: {
+            id: string;
+            date: string;
+            total_quantity: number;
+            distributed_count: number;
+            remaining_quantity: number;
+          };
+        };
+      }> = await apiClient.post("/api/school/scan-meal", data);
+
+      return response.data.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to process meal scan"
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  }
 }

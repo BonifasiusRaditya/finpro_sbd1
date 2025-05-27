@@ -12,8 +12,8 @@ export class ReceptionLogRepository {
   ): Promise<ReceptionLog> {
     try {
       const result = await pool.query(
-        `INSERT INTO reception_logs (user_id, school_menu_allocation_id) 
-         VALUES ($1, $2) 
+        `INSERT INTO reception_logs (user_id, school_menu_allocation_id, date) 
+         VALUES ($1, $2, CURRENT_DATE) 
          RETURNING *`,
         [logData.user_id, logData.school_menu_allocation_id]
       );

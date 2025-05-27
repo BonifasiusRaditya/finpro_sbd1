@@ -208,7 +208,7 @@ apiClient.interceptors.response.use(
       // Token expired or invalid, clear storage and redirect to login
       localStorage.removeItem("government_token");
       localStorage.removeItem("government_user");
-      window.location.href = "/government/auth/login";
+      window.location.href = "/govt/auth/login";
     }
     return Promise.reject(error);
   }
@@ -249,7 +249,7 @@ export class GovernmentAPI {
   static logout(): void {
     localStorage.removeItem("government_token");
     localStorage.removeItem("government_user");
-    window.location.href = "/government/auth/login";
+    window.location.href = "/gov/auth/login";
   }
 
   /**

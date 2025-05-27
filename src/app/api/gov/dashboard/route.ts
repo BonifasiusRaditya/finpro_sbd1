@@ -71,21 +71,20 @@ export async function GET(request: NextRequest) {
       distribution_stats AS (
         SELECT 
           COUNT(*) as total_distributions,
-          COUNT(DISTINCT rl.student_id) as unique_students_served,
-          COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE THEN 1 END) as today_distributions,
-          COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '1 day' AND rl.claimed_at < CURRENT_DATE THEN 1 END) as yesterday_distributions,
-          COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as week_distributions,
-          COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as month_distributions,
+          COUNT(DISTINCT rl.user_id) as unique_students_served,
+          COUNT(CASE WHEN rl.received_at >= CURRENT_DATE THEN 1 END) as today_distributions,
+          COUNT(CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '1 day' AND rl.received_at < CURRENT_DATE THEN 1 END) as yesterday_distributions,
+          COUNT(CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as week_distributions,
+          COUNT(CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as month_distributions,
           SUM(m.price_per_portion) as total_distribution_value
         FROM reception_logs rl
-        JOIN students st ON rl.student_id = st.id
+        JOIN students st ON rl.user_id = st.id
         JOIN schools s ON st.school_id = s.id
-        LEFT JOIN school_menu_allocations sma ON sma.school_id = s.id 
-          AND DATE(sma.date) = DATE(rl.claimed_at)
+        LEFT JOIN school_menu_allocations sma ON rl.school_menu_allocation_id = sma.id
         LEFT JOIN menus m ON sma.menu_id = m.id
         WHERE s.government_id = $1 ${dateFilter.replace(
           "sma.date",
-          "rl.claimed_at"
+          "rl.received_at"
         )}
       ),
       school_performance AS (
@@ -95,26 +94,26 @@ export async function GET(request: NextRequest) {
           gs.npsn,
           gs.total_students,
           COUNT(rl.id) as total_distributions,
-          COUNT(DISTINCT rl.student_id) as unique_students_served,
+          COUNT(DISTINCT rl.user_id) as unique_students_served,
           ROUND(
             CASE 
               WHEN gs.total_students > 0 
-              THEN (COUNT(DISTINCT rl.student_id)::decimal / gs.total_students) * 100 
+              THEN (COUNT(DISTINCT rl.user_id)::decimal / gs.total_students) * 100 
               ELSE 0 
             END, 2
           ) as participation_rate,
-          COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as recent_distributions
+          COUNT(CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as recent_distributions
         FROM government_schools gs
         LEFT JOIN students st ON gs.id = st.school_id
-        LEFT JOIN reception_logs rl ON st.id = rl.student_id
+        LEFT JOIN reception_logs rl ON st.id = rl.user_id
           ${
             dateFilter
-              ? `AND rl.claimed_at >= $${queryParams.indexOf(startDate!) + 1}`
+              ? `AND rl.received_at >= $${queryParams.indexOf(startDate!) + 1}`
               : ""
           }
           ${
             dateFilter && endDate
-              ? `AND rl.claimed_at <= $${queryParams.indexOf(endDate!) + 1}`
+              ? `AND rl.received_at <= $${queryParams.indexOf(endDate!) + 1}`
               : ""
           }
         GROUP BY gs.id, gs.name, gs.npsn, gs.total_students
@@ -122,21 +121,20 @@ export async function GET(request: NextRequest) {
       ),
       daily_trends AS (
         SELECT 
-          DATE(rl.claimed_at) as distribution_date,
+          DATE(rl.received_at) as distribution_date,
           COUNT(*) as daily_distributions,
-          COUNT(DISTINCT rl.student_id) as daily_unique_students,
+          COUNT(DISTINCT rl.user_id) as daily_unique_students,
           COUNT(DISTINCT st.school_id) as schools_active,
           SUM(m.price_per_portion) as daily_value
         FROM reception_logs rl
-        JOIN students st ON rl.student_id = st.id
+        JOIN students st ON rl.user_id = st.id
         JOIN schools s ON st.school_id = s.id
-        LEFT JOIN school_menu_allocations sma ON sma.school_id = s.id 
-          AND DATE(sma.date) = DATE(rl.claimed_at)
+        LEFT JOIN school_menu_allocations sma ON rl.school_menu_allocation_id = sma.id
         LEFT JOIN menus m ON sma.menu_id = m.id
         WHERE s.government_id = $1 
-          AND rl.claimed_at >= CURRENT_DATE - INTERVAL '30 days'
-          ${dateFilter.replace("sma.date", "rl.claimed_at")}
-        GROUP BY DATE(rl.claimed_at)
+          AND rl.received_at >= CURRENT_DATE - INTERVAL '30 days'
+          ${dateFilter.replace("sma.date", "rl.received_at")}
+        GROUP BY DATE(rl.received_at)
         ORDER BY distribution_date DESC
         LIMIT 30
       ),
@@ -155,14 +153,12 @@ export async function GET(request: NextRequest) {
               ELSE 0 
             END, 2
           ) as utilization_rate,
-          COUNT(DISTINCT st.school_id) as schools_served
+          COUNT(DISTINCT s.id) as schools_served
         FROM menus m
         JOIN school_menu_allocations sma ON m.id = sma.menu_id
         JOIN schools s ON sma.school_id = s.id
-        LEFT JOIN reception_logs rl ON rl.student_id IN (
-          SELECT st.id FROM students st WHERE st.school_id = s.id
-        ) AND DATE(rl.claimed_at) = sma.date
-        LEFT JOIN students st ON rl.student_id = st.id
+        LEFT JOIN reception_logs rl ON rl.school_menu_allocation_id = sma.id
+        LEFT JOIN students st ON rl.user_id = st.id
         WHERE s.government_id = $1 ${dateFilter.replace("sma.date", "m.date")}
         GROUP BY m.id, m.name, m.date, m.price_per_portion
         HAVING COUNT(rl.id) > 0
@@ -181,23 +177,23 @@ export async function GET(request: NextRequest) {
           ROUND(
             CASE 
               WHEN COUNT(DISTINCT st.id) > 0 
-              THEN (COUNT(DISTINCT rl.student_id)::decimal / COUNT(DISTINCT st.id)) * 100 
+              THEN (COUNT(DISTINCT rl.user_id)::decimal / COUNT(DISTINCT st.id)) * 100 
               ELSE 0 
             END, 2
           ) as overall_participation_rate,
           COUNT(DISTINCT s.id) as active_schools,
-          COUNT(DISTINCT CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '7 days' THEN s.id END) as recently_active_schools
+          COUNT(DISTINCT CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '7 days' THEN s.id END) as recently_active_schools
         FROM schools s
         LEFT JOIN students st ON s.id = st.school_id
-        LEFT JOIN reception_logs rl ON st.id = rl.student_id
+        LEFT JOIN reception_logs rl ON st.id = rl.user_id
           ${
             dateFilter
-              ? `AND rl.claimed_at >= $${queryParams.indexOf(startDate!) + 1}`
+              ? `AND rl.received_at >= $${queryParams.indexOf(startDate!) + 1}`
               : ""
           }
           ${
             dateFilter && endDate
-              ? `AND rl.claimed_at <= $${queryParams.indexOf(endDate!) + 1}`
+              ? `AND rl.received_at <= $${queryParams.indexOf(endDate!) + 1}`
               : ""
           }
         LEFT JOIN school_menu_allocations sma ON s.id = sma.school_id
@@ -255,27 +251,27 @@ export async function GET(request: NextRequest) {
         s.npsn,
         COUNT(DISTINCT st.id) as total_students,
         COUNT(rl.id) as total_distributions,
-        COUNT(DISTINCT rl.student_id) as unique_students_served,
+        COUNT(DISTINCT rl.user_id) as unique_students_served,
         ROUND(
           CASE 
             WHEN COUNT(DISTINCT st.id) > 0 
-            THEN (COUNT(DISTINCT rl.student_id)::decimal / COUNT(DISTINCT st.id)) * 100 
+            THEN (COUNT(DISTINCT rl.user_id)::decimal / COUNT(DISTINCT st.id)) * 100 
             ELSE 0 
           END, 2
         ) as participation_rate,
-        COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as recent_distributions,
-        COUNT(CASE WHEN rl.claimed_at >= CURRENT_DATE THEN 1 END) as today_distributions
+        COUNT(CASE WHEN rl.received_at >= CURRENT_DATE - INTERVAL '7 days' THEN 1 END) as recent_distributions,
+        COUNT(CASE WHEN rl.received_at >= CURRENT_DATE THEN 1 END) as today_distributions
       FROM schools s
       LEFT JOIN students st ON s.id = st.school_id
-      LEFT JOIN reception_logs rl ON st.id = rl.student_id
+      LEFT JOIN reception_logs rl ON st.id = rl.user_id
         ${
           dateFilter
-            ? `AND rl.claimed_at >= $${queryParams.indexOf(startDate!) + 1}`
+            ? `AND rl.received_at >= $${queryParams.indexOf(startDate!) + 1}`
             : ""
         }
         ${
           dateFilter && endDate
-            ? `AND rl.claimed_at <= $${queryParams.indexOf(endDate!) + 1}`
+            ? `AND rl.received_at <= $${queryParams.indexOf(endDate!) + 1}`
             : ""
         }
       WHERE s.government_id = $1
@@ -287,21 +283,20 @@ export async function GET(request: NextRequest) {
     // Get daily trends
     const dailyTrendsQuery = `
       SELECT 
-        DATE(rl.claimed_at) as date,
+        DATE(rl.received_at) as date,
         COUNT(*) as distributions,
-        COUNT(DISTINCT rl.student_id) as unique_students,
+        COUNT(DISTINCT rl.user_id) as unique_students,
         COUNT(DISTINCT st.school_id) as active_schools,
         COALESCE(SUM(m.price_per_portion), 0) as total_value
       FROM reception_logs rl
-      JOIN students st ON rl.student_id = st.id
+      JOIN students st ON rl.user_id = st.id
       JOIN schools s ON st.school_id = s.id
-      LEFT JOIN school_menu_allocations sma ON sma.school_id = s.id 
-        AND DATE(sma.date) = DATE(rl.claimed_at)
+      LEFT JOIN school_menu_allocations sma ON rl.school_menu_allocation_id = sma.id
       LEFT JOIN menus m ON sma.menu_id = m.id
       WHERE s.government_id = $1 
-        AND rl.claimed_at >= CURRENT_DATE - INTERVAL '14 days'
-        ${dateFilter.replace("sma.date", "rl.claimed_at")}
-      GROUP BY DATE(rl.claimed_at)
+        AND rl.received_at >= CURRENT_DATE - INTERVAL '14 days'
+        ${dateFilter.replace("sma.date", "rl.received_at")}
+      GROUP BY DATE(rl.received_at)
       ORDER BY date DESC;
     `;
 
@@ -321,14 +316,12 @@ export async function GET(request: NextRequest) {
             ELSE 0 
           END, 2
         ) as utilization_rate,
-        COUNT(DISTINCT st.school_id) as schools_served
+        COUNT(DISTINCT s.id) as schools_served
       FROM menus m
       JOIN school_menu_allocations sma ON m.id = sma.menu_id
       JOIN schools s ON sma.school_id = s.id
-      LEFT JOIN reception_logs rl ON rl.student_id IN (
-        SELECT st.id FROM students st WHERE st.school_id = s.id
-      ) AND DATE(rl.claimed_at) = sma.date
-      LEFT JOIN students st ON rl.student_id = st.id
+      LEFT JOIN reception_logs rl ON rl.school_menu_allocation_id = sma.id
+      LEFT JOIN students st ON rl.user_id = st.id
       WHERE s.government_id = $1 ${dateFilter.replace("sma.date", "m.date")}
       GROUP BY m.id, m.name, m.date, m.price_per_portion
       ORDER BY distribution_count DESC

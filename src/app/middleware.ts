@@ -5,7 +5,7 @@ import { JWTService } from "@/lib/jwt";
 const ROUTE_PATTERNS = {
   student: ["/student"],
   school: ["/school"],
-  government: ["/gov", "/government"],
+  government: ["/gov", "/gov"],
 } as const;
 
 // Define public routes that don't require authentication
